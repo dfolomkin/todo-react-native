@@ -1,57 +1,62 @@
-import React from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { connect } from "react-redux";
+import React from 'react'
+import { Alert, Icon, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Button } from 'react-native-material-ui'
+import { connect } from 'react-redux'
 
-import { addTask } from "../actions";
+import { addTask } from '../actions'
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  input: {
+    flex: 1,
+    height: 42
+  }
+})
 
 class AddTaskBarComponent extends React.Component {
-  handleKeyPress = e => {
-    if (e.key == "Enter" && this.taskInput.value !== "") {
-      this.props.onAddTask(this.taskInput.value);
-      this.taskInput.value = "";
+  constructor(props) {
+    super(props)
+    this.state = {
+      title: ''
     }
-  };
+  }
 
   handleAddClick = () => {
-    if (this.taskInput.value !== "") {
-      this.props.onAddTask(this.taskInput.value);
-      this.taskInput.value = "";
+    if (this.state.title !== '') {
+      this.props.onAddTask(this.state.title)
+      this.setState({ title: '' })
     }
-  };
+  }
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <TextInput
-          className="form-control"
-          type="text"
+          style={styles.input}
           placeholder="Enter new task"
-          onKeyPress={this.handleKeyPress}
-          ref={node => {
-            this.taskInput = node;
-          }}
+          value={this.state.title}
+          onChangeText={title => this.setState({ title: title })}
         />
-        <Button
-          className="btn btn-success"
-          type="button"
-          onClick={this.handleAddClick}
-        >
+        <Button raised primary icon="done" text="Add" onPress={this.handleAddClick} />
       </View>
-    );
+    )
   }
 }
 
 const mapStateToProps = state => ({
   tasks: state.tasks
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   onAddTask: taskTitle => {
-    dispatch(addTask(taskTitle));
+    dispatch(addTask(taskTitle))
   }
-});
+})
 
 export const AddTaskBar = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddTaskBarComponent);
+)(AddTaskBarComponent)
